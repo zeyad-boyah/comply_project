@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreDocumentRequest;
 use App\Http\Requests\UpdateDocumentRequest;
+use App\Http\Resources\DocumentResource;
 use App\Models\Document;
 use Illuminate\Http\Client\Response;
 use Symfony\Component\HttpFoundation\Response as ResponseCode;
@@ -26,7 +27,8 @@ class DocumentController extends Controller
 
         $documents = $query->get();
 
-        return response()->json($documents);
+        // return response()->json($documents);
+        return DocumentResource::collection($documents);
     }
 
     /**
@@ -35,8 +37,9 @@ class DocumentController extends Controller
     public function store(StoreDocumentRequest $request)
     {
         //
-        $doc = Document::create($request->all());
-        return response()->json($doc, ResponseCode::HTTP_CREATED);
+        $document = Document::create($request->validated());
+
+        return response()->json(new DocumentResource($document), ResponseCode::HTTP_CREATED);
     }
 
     /**
@@ -45,7 +48,7 @@ class DocumentController extends Controller
     public function show(Document $document)
     {
         //
-        return response()->json($document, ResponseCode::HTTP_OK);
+        return response()->json(new DocumentResource($document), ResponseCode::HTTP_OK);
     }
 
     /**
@@ -54,10 +57,10 @@ class DocumentController extends Controller
     public function update(UpdateDocumentRequest $request, Document $document)
     {
         //
-        $document->update($request->all());
+        $document->update($request->validated());
         return response()->json([
             'message' => 'Document updated successfully.',
-            'data' => $document
+            'data' => new DocumentResource($document)
         ], ResponseCode::HTTP_OK);
     }
 

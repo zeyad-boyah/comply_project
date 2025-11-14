@@ -15,4 +15,16 @@ class Document extends Model
         'reviewed_by',
         'reviewed_at',
     ]; 
+
+    protected $casts = [
+        'uploaded_at' => 'datetime',
+        'reviewed_at' => 'datetime',
+    ];
+
+    protected $appends = ['is_reviewed'];
+
+    public function getIsReviewedAttribute()
+    {
+        return $this->reviewed_at !== null;
+    }
 }
