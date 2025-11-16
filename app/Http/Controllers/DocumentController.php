@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\DocumentChecker;
 use App\Http\Requests\StoreDocumentRequest;
 use App\Http\Requests\UpdateDocumentRequest;
 use App\Http\Resources\DocumentResource;
@@ -27,14 +28,13 @@ class DocumentController extends Controller
 
         $documents = $query->get();
 
-        // return response()->json($documents);
         return DocumentResource::collection($documents);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreDocumentRequest $request)
+    public function store(StoreDocumentRequest $request, DocumentChecker $document)
     {
         //
         $document = Document::create($request->validated());
